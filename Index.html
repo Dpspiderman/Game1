@@ -1,0 +1,127 @@
+Your HTML setup for a 2D flying game looks great! Below is an enhanced version of the `game.js` file that will create a simple flying game. This implementation includes a flying object (an airplane) that the player can control using the keyboard, along with some basic features like boundaries and a simple scoring system based on time survived.
+
+### `game.js`
+
+```javascript
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let player = {
+    x: canvas.width / 2 - 25, // Centered horizontally
+    y: canvas.height / 2 - 15, // Centered vertically
+    width: 50,
+    height: 30,
+    speed: 5,
+};
+
+let keys = {};
+let score = 0;
+let gameOver = false;
+
+// Listen for keyboard input
+document.addEventListener('keydown', (e) => {
+    keys[e.key] = true;
+});
+
+document.addEventListener('keyup', (e) => {
+    keys[e.key] = false;
+});
+
+// Update player position based on key presses
+function update() {
+    if (!gameOver) {
+        if (keys['ArrowUp'] && player.y > 0) {
+            player.y -= player.speed; // Move up
+        }
+        if (keys['ArrowDown'] && player.y < canvas.height - player.height) {
+            player.y += player.speed; // Move down
+        }
+        if (keys['ArrowLeft'] && player.x > 0) {
+            player.x -= player.speed; // Move left
+        }
+        if (keys['ArrowRight'] && player.x < canvas.width - player.width) {
+            player.x += player.speed; // Move right
+        }
+
+        // Increment score over time
+        score++;
+    }
+}
+
+// Draw everything on the canvas
+function draw() {
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw the sky
+    ctx.fillStyle = '#87CEEB'; // Sky blue
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw the player (airplane)
+    ctx.fillStyle = 'red'; // Color of the airplane
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+    
+    // Draw score
+    ctx.fillStyle = 'black'; // Color of the score text
+    ctx.font = '20px Arial';
+    ctx.fillText(`Score: ${score}`, 10, 30);
+}
+
+// Game loop
+function gameLoop() {
+    update();
+    draw();
+    
+    // Check if the game is over (you can add your game over logic here)
+    if (gameOver) {
+        ctx.fillStyle = 'black';
+        ctx.font = '50px Arial';
+        ctx.fillText('Game Over', canvas.width / 2 - 120, canvas.height / 2);
+        ctx.font = '20px Arial';
+        ctx.fillText('Press R to Restart', canvas.width / 2 - 100, canvas.height / 2 + 40);
+    } else {
+        requestAnimationFrame(gameLoop); // Repeat the loop
+    }
+}
+
+// Restart the game
+document.addEventListener('keypress', (e) => {
+    if (gameOver && e.key.toLowerCase() === 'r') {
+        resetGame();
+    }
+});
+
+// Reset game state
+function resetGame() {
+    player.x = canvas.width / 2 - 25; // Centered horizontally
+    player.y = canvas.height / 2 - 15; // Centered vertically
+    score = 0;
+    gameOver = false;
+    gameLoop(); // Start the game loop again
+}
+
+// Start the game loop
+gameLoop();
+```
+
+### Features of the Updated Game:
+
+1. **Player Movement**: Use the arrow keys to move the player (airplane) around the canvas.
+
+2. **Score System**: The score increments over time, rewarding players for staying alive.
+
+3. **Game Over Logic**: A simple game-over message appears if you choose to implement logic to end the game (you can add collision detection with obstacles or bounds).
+
+4. **Restart Option**: The game can be restarted by pressing the "R" key after a game-over.
+
+### How to Use:
+1. **Create Files**: Make sure you have the `index.html` and `game.js` files as mentioned earlier.
+2. **Run the Game**: Open `index.html` in a web browser. Use the arrow keys to control the airplane and watch the score increase over time.
+
+### Possible Enhancements:
+- Add obstacles that the player must avoid.
+- Implement different levels or speeds.
+- Add background music or sound effects for a more engaging experience.
+- Create a more advanced drawing of the airplane instead of a simple rectangle.
+
+Feel free to modify and expand the code as needed!
